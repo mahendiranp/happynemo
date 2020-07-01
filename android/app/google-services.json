@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "127177712138",
+    "firebase_url": "https://apidemo-9b2fc.firebaseio.com",
+    "project_id": "apidemo-9b2fc",
+    "storage_bucket": "apidemo-9b2fc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:127177712138:android:d61998279cec4efa02b5f3",
+        "android_client_info": {
+          "package_name": "com.happynemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "127177712138-9aj93enu33mt8b38u3hchfhi1glp553u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2HL6Img8VqlHm6luOR5HHwTCEGeizh0E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "127177712138-9aj93enu33mt8b38u3hchfhi1glp553u.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "127177712138-75aujaanmporscvbohupt8o4qpocusl6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.happynemo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

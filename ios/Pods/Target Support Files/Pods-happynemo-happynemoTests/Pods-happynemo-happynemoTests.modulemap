@@ -1,0 +1,6 @@
+module Pods_happynemo_happynemoTests {
+  umbrella header "Pods-happynemo-happynemoTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
