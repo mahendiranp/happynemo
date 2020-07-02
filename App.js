@@ -25,25 +25,22 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import { Provider } from 'react-redux'
+import store from './src/store'
 
 import SplashScreen from './src/screens/SplashScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
+import HomeScreen from './src/screens/HomeScreen';
 import DrawerNavigationRoutes from './src/screens/DrawerNavigatorRoutes';
 
-function HomeScreen() {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Home Screen</Text>
-    </View>
-  );
-}
 
 const Stack = createStackNavigator();
 
 const App: () => React$Node = () => {
   return (
     <>
+    <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
@@ -55,7 +52,7 @@ const App: () => React$Node = () => {
           />
           <Stack.Screen
             name="Login"
-            component={LoginScreen}
+            component={HomeScreen}
             options={{
               headerLeft: (props) => (
                 <Image
@@ -104,6 +101,7 @@ const App: () => React$Node = () => {
           />
         </Stack.Navigator>
       </NavigationContainer>
+      </Provider>
     </>
   );
 };

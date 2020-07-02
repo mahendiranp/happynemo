@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Button,
   TouchableElement,
+  Alert
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {
@@ -18,6 +19,8 @@ import {
   GoogleSigninButton,
   statusCodes,
 } from '@react-native-community/google-signin';
+import { Link } from '@react-navigation/native';
+
 GoogleSignin.configure({
   webClientId: '',
 });
@@ -26,34 +29,43 @@ const LoginScreen = (props) => {
   let [userPassword, setUserPassword] = useState('');
   let [loading, setLoading] = useState(false);
   let [errortext, setErrortext] = useState('');
+  let [invalidpassword, setinvalidpassword] = useState(false)
+  let [invalidpusername, setinvalidpusername] = useState(false)
 
   const handleSubmitPress = () => {
-    setErrortext('');
+    // setErrortext('');
     // if (!userEmail) {
-    //   alert('Please fill Email');
+    //   setinvalidpusername(true)
     //   return;
     // }
     // if (!userPassword) {
-    //   alert('Please fill Password');
+    //   setinvalidpassword(true)
     //   return;
     // }
 
-    auth()
-      .signInWithEmailAndPassword('mahendran313@gmail.com', 'password1')
-      .then(() => {
-        console.log('User account created & signed in!');
-      })
-      .catch((error) => {
-        if (error.code === 'auth/email-already-in-use') {
-          console.log('That email address is already in use!');
-        }
+      try {
+        auth().signInWithEmailAndPassword(userEmail, userPassword)
+            .then(() => {
+              console.log('User account created & signed in!');
+            })
+            .catch((error) => {
+              console.log(error.code)
+              switch(error.code) {
+                case 'auth/invalid-email':
+                      Alert.alert('Email already in use !')
+                      break;
+                case 'auth/wrong-password': 
+                      Alert.alert('invalid password')
+                      break;
+                case 'auth/user-not-found':
+                      Alert.alert('invalid user')
+                      break;
+            }
+            });
 
-        if (error.code === 'auth/invalid-email') {
-          console.log('That email address is invalid!');
-        }
-
-        console.error(error);
-      });
+      } catch (error){
+        Alert.alert(error)
+      }
   };
 
   const onGoogleButtonPress = async () => {
@@ -78,7 +90,7 @@ const LoginScreen = (props) => {
                 onChangeText={(UserEmail) => setUserEmail(UserEmail)}
                 underlineColorAndroid="#FFFFFF"
                 placeholder="Enter Email" //dummy@abc.com
-                placeholderTextColor="#F6F6F7"
+                placeholderTextColor="#888888"
                 autoCapitalize="none"
                 keyboardType="email-address"
                 ref={(ref) => {
@@ -90,6 +102,7 @@ const LoginScreen = (props) => {
                 }
                 blurOnSubmit={false}
               />
+              {invalidpusername && <Text>Invalid </Text>}
             </View>
             <View style={styles.SectionStyle}>
               <TextInput
@@ -97,7 +110,7 @@ const LoginScreen = (props) => {
                 onChangeText={(UserPassword) => setUserPassword(UserPassword)}
                 underlineColorAndroid="#FFFFFF"
                 placeholder="Enter Password" //12345
-                placeholderTextColor="#F6F6F7"
+                placeholderTextColor="#888888"
                 keyboardType="default"
                 ref={(ref) => {
                   this._passwordinput = ref;
@@ -110,6 +123,7 @@ const LoginScreen = (props) => {
             {errortext != '' ? (
               <Text style={styles.errorTextStyle}> {errortext} </Text>
             ) : null}
+            {invalidpassword && <Text>Invalid </Text>}
             <TouchableOpacity
               style={styles.buttonStyle}
               activeOpacity={0.5}
@@ -148,13 +162,7 @@ const LoginScreen = (props) => {
                 margin: 10,
               }}>
               <Text>Don't have an account? </Text>
-              <TouchableOpacity>
-                <Text
-                  style={styles.signupLink}
-                  onpress={() => props.navigation.navigate('RegisterScreen')}>
-                  Sign up
-                </Text>
-              </TouchableOpacity>
+              <Link to="/RegisterScreen">Sign up</Link>
               <Text />
             </View>
           </KeyboardAvoidingView>
@@ -207,7 +215,7 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     flex: 1,
-    color: 'rgba(0, 0, 0, 0.38)',
+    color: '#000000',
     fontSize: 14,
     fontWeight: '400',
     lineHeight: 16,
