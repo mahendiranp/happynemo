@@ -1,13 +1,29 @@
-import * as React from 'react';
-import { Text, View, Image, StyleSheet } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { Text, View, Image, StyleSheet, Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
+import firestore from '@react-native-firebase/firestore';
+
+
 const Tab = createMaterialTopTabNavigator();
 
 function TodayScreen() {
+
+useEffect( async () => {
+  console.log('dddd')
+  const usersCollection = await firestore().collection('activities')
+  .get()
+  .then(querySnapshot => {
+    console.log('Total users: ', querySnapshot.size);
+  })
+
+    console.log(usersCollection)
+
+
+}, [])
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Home!</Text>

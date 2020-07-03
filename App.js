@@ -33,11 +33,14 @@ import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import DrawerNavigationRoutes from './src/screens/DrawerNavigatorRoutes';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 
 const Stack = createStackNavigator();
 
-const App: () => React$Node = () => {
+const App =  ({navigation}) => {
+  console.log(navigation)
   return (
     <>
     <Provider store={store}>
@@ -47,12 +50,16 @@ const App: () => React$Node = () => {
             name="SplashScreen"
             component={SplashScreen}
             options={{
-              headerShown: false,
+              headerShown: true,
             }}
           />
           <Stack.Screen
-            name="Login"
+            name="HomeScreen"
             component={HomeScreen}
+          />
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
             options={{
               headerLeft: (props) => (
                 <Image

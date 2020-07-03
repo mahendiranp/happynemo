@@ -1,9 +1,14 @@
-import * as React from 'react';
+import React, {useState} from 'react';
 import { Text, View, Image, StyleSheet } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DrawerActions } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+
+
+
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 import Dashboard from './Dashboard'
 
@@ -55,10 +60,42 @@ function FAQ() {
 }
 
 
+const HomeScreen = () => (
+  <View style={styles.container}>
+      <Text>Home Screen!</Text>
+  </View>
+);
+
+
+const ProfileScreen = () => (
+  <View style={styles.container}>
+      <Text>Profile Screen!</Text>
+  </View>
+);
+
+
+const SettingsScreen = () => (
+  <View style={styles.container}>
+      <Text>Settings Screen!</Text>
+  </View>
+);
+
 
 
 
 const Tab = createBottomTabNavigator();
+
+const Drawer = createDrawerNavigator();
+
+function LeftDrawer() {
+  return (
+    <Drawer.Navigator initialRouteName="RightDrawer" drawerPosition="left">
+      <Drawer.Screen name="MyTabs" component={MyTabs} />
+      <Drawer.Screen name="Help" component={SettingsScreen} />
+    </Drawer.Navigator>
+  );
+}
+
 
 function MyTabs() {
   return (
@@ -90,12 +127,43 @@ function MyTabs() {
   );
 }
 
-export default function HomeScreeen() {
+function LogoTitle() {
   return (
-    <MyTabs />
+    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', border:'red' }}>
+    <Image
+      style={{ width: 67, height: 32, }}
+      source={require('../assests/Logo_White.png')}
+    />
+    </View>
   );
 }
 
+
+
+const  HomeScreeen = ({ navigation }) => {
+
+    const [selectionCount, setSelectionCount] = React.useState(0);
+
+    React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: props => <LogoTitle {...props} />,
+      headerTitleAlign: 'left',
+      headerLeft: (props) => (
+        <View style={styles.header}>
+        <Icon name="bars" size={20} color={'white'} onPress={() =>  navigation.dispatch(DrawerActions.toggleDrawer())} />
+        </View>
+      ),
+      headerStyle: {
+        backgroundColor: '#f39924',
+      },
+    });
+  }, [navigation, selectionCount]);
+    return (
+      <LeftDrawer />
+    );
+  }
+
+export default HomeScreeen
 
 
 const styles = StyleSheet.create({
@@ -103,5 +171,11 @@ const styles = StyleSheet.create({
     width: 25,
     resizeMode: 'contain',
     color: 'red'
+  },
+  header:{
+    width:25,
+    flex: 1,
+    justifyContent: 'center',
+    marginLeft:20
   }
 })

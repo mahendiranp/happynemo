@@ -52,7 +52,15 @@ const SplashScreen = (props) => {
   if (!user) {
     props.navigation.navigate('Login');
   } else {
-    props.navigation.navigate('DrawerNavigationRoutes');
+    //props.navigation.navigate('HomeScreen');
+    props.navigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'HomeScreen'
+              },
+            ],
+          })
   }
 
   return (
