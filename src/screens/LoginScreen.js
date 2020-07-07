@@ -141,15 +141,6 @@ const LoginScreen = (props) => {
                 style={styles.tinyLogo}
                 source={require('../assests/icon-gmail.png')}
               />
-
-              <Button
-                title="Google Sign-In"
-                onPress={() =>
-                  onGoogleButtonPress().then(() =>
-                    console.log('Signed in with Google!'),
-                  )
-                }
-              />
             </View>
 
             <View

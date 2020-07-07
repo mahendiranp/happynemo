@@ -17,6 +17,7 @@ const SplashScreen = (props) => {
 
   function onAuthStateChanged(user) {
     setUser(user);
+    console.log(user)
     if (initializing) {
       setInitializing(false);
     }
@@ -49,9 +50,20 @@ const SplashScreen = (props) => {
     return null;
   }
 
+  console.log(user)
+
   if (!user) {
-    props.navigation.navigate('Login');
+    //props.navigation.navigate('Login');
+    props.navigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'Login'
+              },
+            ],
+          })
   } else {
+    //props.navigation.navigate('RegisterScreen');
     //props.navigation.navigate('HomeScreen');
     props.navigation.reset({
             index: 0,

@@ -11,14 +11,22 @@ import com.facebook.react.shell.MainReactPackage;
 import java.util.Arrays;
 import java.util.ArrayList;
 
+// @react-native-community/datetimepicker
+import com.reactcommunity.rndatetimepicker.RNDateTimePickerPackage;
 // @react-native-community/google-signin
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
 // @react-native-community/masked-view
 import org.reactnative.maskedview.RNCMaskedViewPackage;
+// @react-native-community/picker
+import com.reactnativecommunity.picker.RNCPickerPackage;
 // @react-native-firebase/app
 import io.invertase.firebase.app.ReactNativeFirebaseAppPackage;
 // @react-native-firebase/auth
 import io.invertase.firebase.auth.ReactNativeFirebaseAuthPackage;
+// @react-native-firebase/database
+import io.invertase.firebase.database.ReactNativeFirebaseDatabasePackage;
+// @react-native-firebase/firestore
+import io.invertase.firebase.firestore.ReactNativeFirebaseFirestorePackage;
 // react-native-gesture-handler
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 // react-native-reanimated
@@ -74,10 +82,14 @@ public class PackageList {
   public ArrayList<ReactPackage> getPackages() {
     return new ArrayList<>(Arrays.<ReactPackage>asList(
       new MainReactPackage(mConfig),
+      new RNDateTimePickerPackage(),
       new RNGoogleSigninPackage(),
       new RNCMaskedViewPackage(),
+      new RNCPickerPackage(),
       new ReactNativeFirebaseAppPackage(),
       new ReactNativeFirebaseAuthPackage(),
+      new ReactNativeFirebaseDatabasePackage(),
+      new ReactNativeFirebaseFirestorePackage(),
       new RNGestureHandlerPackage(),
       new ReanimatedPackage(),
       new SafeAreaContextPackage(),

@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 import Dashboard from './Dashboard'
+import IndividualActivity from './IndividualActivity'
 
 
 function IconWithBadge({ name, badgeCount, color, size }) {

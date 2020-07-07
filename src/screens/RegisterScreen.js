@@ -15,7 +15,8 @@ import {
   Keyboard,
   TouchableOpacity,
   ScrollView,
-  Button
+  Button,
+  Dimensions
 } from 'react-native';
 import { Link } from '@react-navigation/native';
 
@@ -26,27 +27,62 @@ import {
   statusCodes,
 } from '@react-native-community/google-signin';
 import StepIndicator from 'react-native-step-indicator';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import {Picker} from '@react-native-community/picker';
+import RNPickerSelect from 'react-native-picker-select';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 
-import Loader from '../components/Loader';
+
+import Stepper from '../components/Stepper'
+import Loader from '../components/Loader'
+import ChildInfo from '../components/ChildInfo'
 
 GoogleSignin.configure({
   webClientId: '',
 });
 
+const languages = [
+  { label: 'English', value: 'english' },
+  { label: 'Hindi', value: 'hindi' },
+  { label: 'Marathi', value: 'marathi' }
+]
 
+
+
+
+const deviceHeight = Dimensions.get("window").height;
+const deviceWidth = Dimensions.get("window").width;
+const scale = 375; 
+const scaleFontSize = (fontSize) => {
+    const ratio = fontSize / scale; // get ratio based on your standard scale
+    const newSize = Math.round(ratio * deviceWidth);
+    return newSize;
+}
 
 const RegisterScreen = props => {
-  let [userName, setUserName] = useState('');
+  let [parentName, setParentName] = useState('');
   let [userAge, setUserAge] = useState('');
   let [userAddress, setUserAddress] = useState('');
   let [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
-   let [userEmail, setUserEmail] = useState('');
-  let [userPassword, setUserPassword] = useState('');
+  let [userEmail, setUserEmail] = useState('');
+  let [parentEmail, setParentEmail] = useState('');
+  let [parentphoneNumber, setParentPhoneNumber] = useState('');
+  let [childName, setChildName] = useState('');
+  let [childDOB, setChildDOB] = useState('');
+  let [childGender, setChildGender] = useState('');
+  let [parentPassword, setParentPassword] = useState('');
   let [loading, setLoading] = useState(false);
   let [errortext, setErrortext] = useState('');
   let [invalidpassword, setinvalidpassword] = useState(false)
-  const [state, setState] = useState({language: 'java'})
+  const [step, setStep] = useState(1);
+  const [kidsinfo, setKidsInfo] = useState([{
+    name:null,
+    age:null,
+    month:null,
+    gender:null
+  }])
+
 
   const handleSubmitPress = () => {
     setErrortext('');
@@ -74,125 +110,258 @@ const RegisterScreen = props => {
     // Sign-in the user with the credential
     return auth().signInWithCredential(googleCredential);
   };
+
+
+const handleKidsList = () => {
+  console.log(kidsinfo)
+  let newData = {
+    name:null,
+    age:null,
+    month:null,
+    gender:null
+  }
+let data = ([...kidsinfo, newData])
+setKidsInfo(data)
+}
+
+const removeHandler = (value) => {
+  console.log(value)
+    const list = [...kidsinfo];
+    list.splice(value, 1);
+    setKidsInfo(list);
+}
+
+console.log(kidsinfo)
   
   return (
      <View style={styles.mainBody}>
       <ScrollView keyboardShouldPersistTaps="handled">
-        <View style={{marginTop: 100}}>
+        <View style={{marginTop: 40}}>
+          <Stepper currentPage={step}/>
           <KeyboardAvoidingView enabled>
             <Text style={styles.headerStyle}>REGISTER</Text>
-            <Text style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                flex: 1,
-                flexWrap: 'wrap',
-                margin: 20,
-                textAlign: 'center'
-              }}>Enter your details</Text>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={(UserEmail) => setUserEmail(UserEmail)}
-                underlineColorAndroid="#FFFFFF"
-                placeholder="Enter parent / guardian's name *" //dummy@abc.com
-                placeholderTextColor="#000000"
-                autoCapitalize="none"
-                keyboardType="email-address"
-                ref={(ref) => {
-                  this._emailinput = ref;
-                }}
-                returnKeyType="next"
-                onSubmitEditing={() =>
-                  this._passwordinput && this._passwordinput.focus()
-                }
-                blurOnSubmit={false}
-              />
-              {invalidpassword && <Text>Invalid </Text>}
-            </View>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={(UserPassword) => setUserPassword(UserPassword)}
-                underlineColorAndroid="#FFFFFF"
-                placeholder="Enter email address" //12345
-                placeholderTextColor="#000000"
-                keyboardType="default"
-                ref={(ref) => {
-                  this._passwordinput = ref;
-                }}
-                onSubmitEditing={Keyboard.dismiss}
-                blurOnSubmit={false}
-                secureTextEntry={true}
-              />
-            </View>
-            {errortext != '' ? (
-              <Text style={styles.errorTextStyle}> {errortext} </Text>
-            ) : null}
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={(UserEmail) => setUserEmail(UserEmail)}
-                underlineColorAndroid="#FFFFFF"
-                placeholder="Enter phone number" //dummy@abc.com
-                placeholderTextColor="#000000"
-                autoCapitalize="none"
-                keyboardType="email-address"
-                ref={(ref) => {
-                  this._emailinput = ref;
-                }}
-                returnKeyType="next"
-                onSubmitEditing={() =>
-                  this._passwordinput && this._passwordinput.focus()
-                }
-                blurOnSubmit={false}
-              />
-              {invalidpassword && <Text>Invalid </Text>}
-            </View>
-            <View  style={styles.languagSelect}>
-            <Text>Select preferred languages *</Text>
-            </View>
-
-            <View style={styles.inline}>
-              <TouchableOpacity
-                style={styles.buttonStyleSecondary}
-                activeOpacity={0.5}
-                onPress={handleBack}>
-                <Text style={styles.backButton}>Back</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.buttonStylePrimary}
-                activeOpacity={0.5}
-                onPress={handleSubmitPress}>
-                <Text style={styles.buttonTextStyle}>LOGIN</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.tinyImages}>
+            {step === 0 && <View>
               <Text style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                flex: 1,
-                flexWrap: 'wrap',
-                margin: 20,
-                textAlign: 'center'
-              }}>
-              Select up to 3 languages in which
-you can experience Nappy Nemo's Nest
-              </Text>
-            </View>
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  flex: 1,
+                  flexWrap: 'wrap',
+                  margin: 20,
+                  textAlign: 'center'
+                }}>Enter your details</Text>
+              <View style={styles.SectionStyle}>
+                <TextInput
+                  style={styles.inputStyle}
+                  onChangeText={(name) => setParentName(name)}
+                  underlineColorAndroid="#FFFFFF"
+                  placeholder="Enter parent / guardian's name *" //dummy@abc.com
+                  placeholderTextColor="#000000"
+                  autoCapitalize="none"
+                  keyboardType="default"
+                  autoCompleteType="off"
+                  textContentType="name"
+                  returnKeyType="next"
+                  blurOnSubmit={false}
+                />
+              </View>
+              <View style={styles.SectionStyle}>
+                <TextInput
+                  style={styles.inputStyle}
+                  onChangeText={(email) => setParentEmail(email)}
+                  underlineColorAndroid="#FFFFFF"
+                  placeholder="Enter email address" //12345
+                  placeholderTextColor="#000000"
+                  textContentType="emailAddress"
+                  keyboardType="email-address"
+                  blurOnSubmit={false}
+                />
+              </View>
+              <View style={styles.SectionStyle}>
+                <TextInput
+                  style={styles.inputStyle}
+                  onChangeText={(number) => setParentPhoneNumber(number)}
+                  underlineColorAndroid="#FFFFFF"
+                  placeholder="Enter phone number" //dummy@abc.com
+                  placeholderTextColor="#000000"
+                  autoCapitalize="none"
+                  keyboardType="number-pad"
+                  textContentType="telephoneNumber"
+                  returnKeyType="next"
+                  blurOnSubmit={false}
+                />
+              </View>
+              <View style={styles.SectionStyle}>
+                <TextInput
+                  style={styles.inputStyle}
+                  onChangeText={(password) => setParentPassword(password)}
+                  underlineColorAndroid="#FFFFFF"
+                  placeholder="Enter password" //dummy@abc.com
+                  placeholderTextColor="#000000"
+                  autoCapitalize="none"
+                  keyboardType="default"
+                  textContentType="password"
+                  returnKeyType="next"
+                  blurOnSubmit={false}
+                  secureTextEntry={true}
+                />
+              </View>
+              <View  style={styles.langSelectArea}>
+                  <View style={styles.languagText}><Text>Select preferred languages *</Text></View>
+                  <View style={styles.langselect}>
+                    <View style={styles.selectBox}>
+                        <RNPickerSelect
+                        placeholder={{}}
+                        items={languages}
+                        onValueChange={value => {
+                          console.log(value)
+                        }}
+                        style={pickerSelectStyles}
+                        useNativeAndroidPickerStyle={false}
+                        Icon={() => {
+                            return (
+                              <View
+                                style={{
+                                  backgroundColor: 'transparent',
+                                  borderTopWidth: 5,
+                                  borderTopColor: 'gray',
+                                  borderRightWidth: 5,
+                                  borderRightColor: 'transparent',
+                                  borderLeftWidth: 5,
+                                  borderLeftColor: 'transparent',
+                                  width: 0,
+                                  height: 0,
+                                  marginTop:5
+                                }}
+                              />
+                            );
+                          }}
+                        />
+                    </View>
+                    <View style={styles.selectBox}>
+                      <RNPickerSelect
+                        placeholder={{}}
+                        items={languages}
+                        onValueChange={value => {
+                          console.log(value)
+                        }}
+                        style={pickerSelectStyles}
+                        useNativeAndroidPickerStyle={false}
+                        Icon={() => {
+                            return (
+                              <View
+                                style={{
+                                  backgroundColor: 'transparent',
+                                  borderTopWidth: 5,
+                                  borderTopColor: 'gray',
+                                  borderRightWidth: 5,
+                                  borderRightColor: 'transparent',
+                                  borderLeftWidth: 5,
+                                  borderLeftColor: 'transparent',
+                                  width: 0,
+                                  height: 0,
+                                  marginTop:5
+                                }}
+                              />
+                            );
+                          }}
+                        />
+                    </View>
+                    <View style={styles.selectBox}>
+                      <RNPickerSelect
+                        placeholder={{}}
+                        items={languages}
+                        onValueChange={value => {
+                          console.log(value)
+                        }}
+                        style={pickerSelectStyles}
+                        useNativeAndroidPickerStyle={false}
+                        Icon={() => {
+                            return (
+                              <View
+                                style={{
+                                  backgroundColor: 'transparent',
+                                  borderTopWidth: 5,
+                                  borderTopColor: 'gray',
+                                  borderRightWidth: 5,
+                                  borderRightColor: 'transparent',
+                                  borderLeftWidth: 5,
+                                  borderLeftColor: 'transparent',
+                                  width: 0,
+                                  height: 0,
+                                  marginTop:5
+                                }}
+                              />
+                            );
+                          }}
+                        />
+                    </View>
+                  </View>
+              </View>
+              
 
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                flex: 1,
-                flexWrap: 'wrap',
-                margin: 10,
-              }}>
-              <Text />
-            </View>
+              <View style={styles.inline}>
+                <TouchableOpacity
+                  style={styles.buttonStyleSecondary}
+                  activeOpacity={0.5}
+                  onPress={handleBack}>
+                  <Text style={styles.backButton}>Back</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.buttonStylePrimary}
+                  activeOpacity={0.5}
+                  onPress={handleSubmitPress}>
+                  <Text style={styles.buttonTextStyle}>LOGIN</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.tinyImages}>
+                <Text style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  flex: 1,
+                  flexWrap: 'wrap',
+                  margin: 20,
+                  textAlign: 'center'
+                }}>
+                Select up to 3 languages in which
+  you can experience Nappy Nemo's Nest
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  flex: 1,
+                  flexWrap: 'wrap',
+                  margin: 10,
+                }}>
+                <Text />
+              </View>
+            </View> }
+            {step === 1 && <View>
+               <Text style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  flex: 1,
+                  flexWrap: 'wrap',
+                  margin: 20,
+                  textAlign: 'center'
+                }}>Enter your children's details ss</Text>
+                 
+                 <Text>{kidsinfo.length}</Text>
+
+                 {kidsinfo && kidsinfo.map((data, index) => {
+                   return(<ChildInfo childIndex={index} removeIndex={removeHandler} enableRemove={kidsinfo.length > 1}/>)
+                 })}
+                 
+                 <Button title='+' onPress={handleKidsList}/>
+            </View> }
+            {step === 2 && <View><Text>3</Text></View> }
+            {step === 3 && <View><Text>4</Text></View> }
           </KeyboardAvoidingView>
         </View>
       </ScrollView>
@@ -208,12 +377,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
   },
+  container:{
+    flex: 1,
+  },
   SectionStyle: {
     flexDirection: 'row',
     height: 40,
-    marginTop: 20,
-    marginLeft: 35,
-    marginRight: 35,
+    marginTop: 10,
+    marginLeft: 15,
+    marginRight: 15,
     margin: 10,
   },
   buttonStylePrimary: {
@@ -331,6 +503,113 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   languagSelect:{
+    fontSize:9,
+    marginLeft: 35,
+    marginRight: 35,
+    display:'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignSelf: 'center',
+  },
 
-  }
+  langSelectArea: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    marginLeft:15,
+    marginRight:15,
+    marginTop:10
+  },
+  selectBox:{
+    flex: 1,
+    color: 'rgba(0, 0, 0, 0.38)',
+    fontSize: 14,
+    fontWeight: '400',
+    borderBottomColor: '#f39924',
+    borderBottomWidth: 2,
+    marginLeft:5,
+    marginRight:5,
+    paddingTop:0,
+    paddingBottom:0,
+  },
+  languagText:{
+    color:'black',
+    fontSize:14,
+    flex: 1
+  },
+  langselect:{
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignSelf: 'center',
+    flex: 2
+  },
+    editIcon: {
+      color: '#E14ED2',
+      fontSize: 15,
+    },
+    fullWidth:{
+      flex: 1,
+      marginVertical:10
+    },
+    childSection:{
+      flex:1,
+      flexDirection: 'row',
+      justifyContent:'space-evenly',
+      marginHorizontal:15
+    },
+    sectionOne:{
+      flexShrink: 1,
+      marginHorizontal:5
+    },
+    sectionTwo:{
+      flexShrink: 1,
+      marginHorizontal:5
+    },
+    sectionThree: {
+      flexShrink: 1,
+      marginHorizontal:5
+    }, 
+    sectionFour: {
+      flexShrink: 1,
+    }
+
+
+});
+
+
+
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignSelf: 'stretch',
+        fontSize: scaleFontSize(16),
+        color: 'black',
+        paddingRight: 10, // to ensure the text is never behind the icon
+        marginBottom: 5,
+        fontSize:12,
+    },
+    inputAndroid: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignSelf: 'stretch',
+        fontSize: scaleFontSize(16),
+        color: 'black',
+        paddingRight: 10, // to ensure the text is never behind the icon
+        marginBottom: 5,
+        fontSize:12,
+        top: 20,
+        right: 10,
+          ...Platform.select({
+      android: {
+        top: 0,
+        right: 0,
+        height:20,
+        padding:0,
+        margin:0
+      },
+    }),
+    },
 });
