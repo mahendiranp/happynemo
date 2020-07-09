@@ -46,7 +46,7 @@ const App =  ({navigation}) => {
     <>
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator  initialRouteName="SplashScreen">
           <Stack.Screen
             name="SplashScreen"
             component={SplashScreen}

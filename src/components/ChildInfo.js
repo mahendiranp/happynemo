@@ -84,6 +84,12 @@ const ChildInfo = (props) => {
 const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
+  const [filledData, setFilledData] = useState({
+      name:"",
+      age:"",
+      month:"",
+      gender:""
+  })
  
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -104,29 +110,49 @@ const [date, setDate] = useState(new Date(1598051730000));
     showMode('time');
   };  
 
-  const handleData = date => {
-      console.log(date)
-  }
-
 
 const handleRemove = () => {
     props.removeIndex(props.childIndex)
 }
 
-const handleChildName = (e) => {
-    setChildName(email)
+const handleChildName = (name) => {
+    setChildName(name)
+    let newdata = {
+        ...filledData,
+        name:name
+    }
+    setFilledData(newdata)
+    props.filledData(props.childIndex, newdata)
 }
 
-const handleAge = (e) => {
-    setChildName(email)
+const handleAge = (age) => {
+    setChildName(age)
+    let newdata = {
+        ...filledData,
+        age:age
+    }
+    setFilledData(newdata)
+    props.filledData(props.childIndex, newdata)
 }
 
-const handleMonth = (e) => {
-    setChildName(email)
+const handleMonth = (value) => {
+    setChildName(value)
+    let newdata = {
+        ...filledData,
+        month:value
+    }
+    setFilledData(newdata)
+    props.filledData(props.childIndex, newdata)
 }
 
-const onPressHandleRadio = (tabs) => {
-     setChildGender(tabs)
+const onPressHandleRadio = (value) => {
+     setChildGender(value)
+    let newdata = {
+        ...filledData,
+        gender:value
+    }
+    setFilledData(newdata)
+    props.filledData(props.childIndex, newdata)
 }
 
 

@@ -16,12 +16,15 @@ const SplashScreen = (props) => {
   const [user, setUser] = useState();
 
   function onAuthStateChanged(user) {
-    setUser(user);
     console.log(user)
+    setUser(user);
     if (initializing) {
       setInitializing(false);
     }
   }
+
+  console.log(user)
+
 
   useEffect(() => {
     // setTimeout(() => {
@@ -62,7 +65,7 @@ const SplashScreen = (props) => {
               },
             ],
           })
-  } else {
+  } else if (user) {
     //props.navigation.navigate('RegisterScreen');
     //props.navigation.navigate('HomeScreen');
     props.navigation.reset({
@@ -74,6 +77,10 @@ const SplashScreen = (props) => {
             ],
           })
   }
+
+     auth()
+  .signOut()
+  .then(() => console.log('User signed out!'));
 
   return (
     <View style={styles.container}>

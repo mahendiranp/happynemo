@@ -16,11 +16,15 @@ import {
   TouchableOpacity,
   ScrollView,
   Button,
-  Dimensions
+  Dimensions,
+  Alert
 } from 'react-native';
 import { Link } from '@react-navigation/native';
+ import { Formik } from 'formik';
 
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
 import {
   GoogleSignin,
   GoogleSigninButton,
@@ -68,14 +72,14 @@ const RegisterScreen = props => {
   let [userEmail, setUserEmail] = useState('');
   let [parentEmail, setParentEmail] = useState('');
   let [parentphoneNumber, setParentPhoneNumber] = useState('');
-  let [childName, setChildName] = useState('');
-  let [childDOB, setChildDOB] = useState('');
-  let [childGender, setChildGender] = useState('');
   let [parentPassword, setParentPassword] = useState('');
+  let [parentLang1, setparentLang1] = useState('');
+  let [parentLang2, setparentLang2] = useState('');
+  let [parentLang3, setparentLang3] = useState('');
   let [loading, setLoading] = useState(false);
   let [errortext, setErrortext] = useState('');
   let [invalidpassword, setinvalidpassword] = useState(false)
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [kidsinfo, setKidsInfo] = useState([{
     name:null,
     age:null,
@@ -94,10 +98,54 @@ const RegisterScreen = props => {
     //   alert('Please fill Password');
     //   return;
     // }
+    if(step === 0) {
+      setStep(1)
+    } else if(step === 1) {
+
+    try {
+        auth().createUserWithEmailAndPassword(parentEmail, parentPassword)
+            .then((res) => {
+              console.log(res);
+              console.log(res.user.uid)
+              firestore()
+              .collection('Users')
+              .doc(res.user.uid)
+              .set({
+                name: parentName,
+                email: parentEmail,
+                phone: parentphoneNumber,
+                lang1: parentLang1,
+                lang2: parentLang2,
+                lang3: parentLang3,
+                kidsinfo: kidsinfo
+              })
+              .then(() => {
+                console.log('User added!');
+              });
+            })
+            .catch((error) => {
+              console.log(error.code)
+              switch(error.code) {
+                case 'auth/invalid-email':
+                      Alert.alert('Email already in use !')
+                      break;
+                case 'auth/wrong-password': 
+                      Alert.alert('invalid password')
+                      break;
+                case 'auth/user-not-found':
+                      Alert.alert('invalid user')
+                      break;
+            }
+            });
+
+      } catch (error){
+        Alert.alert(error)
+      }
+    }
   };
 
   const handleBack = () => {
-   //props.navigation.navigate('LoginScreen')
+   props.navigation.navigate('LoginScreen')
   }
 
   const onGoogleButtonPress = async () => {
@@ -131,6 +179,13 @@ const removeHandler = (value) => {
     setKidsInfo(list);
 }
 
+const handleChildsData = (value1, value2) => {
+  console.log(kidsinfo)
+  const list = [...kidsinfo];
+  list[value1] = value2;
+  setKidsInfo(list)
+}
+
 console.log(kidsinfo)
   
   return (
@@ -140,7 +195,8 @@ console.log(kidsinfo)
           <Stepper currentPage={step}/>
           <KeyboardAvoidingView enabled>
             <Text style={styles.headerStyle}>REGISTER</Text>
-            {step === 0 && <View>
+            {step === 0 && 
+            <View>
               <Text style={{
                   display: 'flex',
                   flexDirection: 'row',
@@ -171,6 +227,7 @@ console.log(kidsinfo)
                   onChangeText={(email) => setParentEmail(email)}
                   underlineColorAndroid="#FFFFFF"
                   placeholder="Enter email address" //12345
+                  autoCapitalize="none"
                   placeholderTextColor="#000000"
                   textContentType="emailAddress"
                   keyboardType="email-address"
@@ -211,10 +268,10 @@ console.log(kidsinfo)
                   <View style={styles.langselect}>
                     <View style={styles.selectBox}>
                         <RNPickerSelect
-                        placeholder={{}}
+                        placeholder={{label:'language 1'}}
                         items={languages}
                         onValueChange={value => {
-                          console.log(value)
+                          setparentLang1(value)
                         }}
                         style={pickerSelectStyles}
                         useNativeAndroidPickerStyle={false}
@@ -240,10 +297,10 @@ console.log(kidsinfo)
                     </View>
                     <View style={styles.selectBox}>
                       <RNPickerSelect
-                        placeholder={{}}
+                        placeholder={{label:'language 2'}}
                         items={languages}
                         onValueChange={value => {
-                          console.log(value)
+                          setparentLang2(value)
                         }}
                         style={pickerSelectStyles}
                         useNativeAndroidPickerStyle={false}
@@ -269,10 +326,10 @@ console.log(kidsinfo)
                     </View>
                     <View style={styles.selectBox}>
                       <RNPickerSelect
-                        placeholder={{}}
+                        placeholder={{label:'language 3'}}
                         items={languages}
                         onValueChange={value => {
-                          console.log(value)
+                          setparentLang3(value)
                         }}
                         style={pickerSelectStyles}
                         useNativeAndroidPickerStyle={false}
@@ -342,6 +399,7 @@ console.log(kidsinfo)
               </View>
             </View> }
             {step === 1 && <View>
+            <View>
                <Text style={{
                   display: 'flex',
                   flexDirection: 'row',
@@ -355,10 +413,25 @@ console.log(kidsinfo)
                  <Text>{kidsinfo.length}</Text>
 
                  {kidsinfo && kidsinfo.map((data, index) => {
-                   return(<ChildInfo childIndex={index} removeIndex={removeHandler} enableRemove={kidsinfo.length > 1}/>)
+                   return(<ChildInfo childIndex={index} removeIndex={removeHandler} filledData={handleChildsData} enableRemove={kidsinfo.length > 1}/>)
                  })}
                  
                  <Button title='+' onPress={handleKidsList}/>
+                 </View>
+                 <View style={styles.inline}>
+                <TouchableOpacity
+                  style={styles.buttonStyleSecondary}
+                  activeOpacity={0.5}
+                  onPress={handleBack}>
+                  <Text style={styles.backButton}>Back</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.buttonStylePrimary}
+                  activeOpacity={0.5}
+                  onPress={handleSubmitPress}>
+                  <Text style={styles.buttonTextStyle}>LOGIN</Text>
+                </TouchableOpacity>
+              </View>
             </View> }
             {step === 2 && <View><Text>3</Text></View> }
             {step === 3 && <View><Text>4</Text></View> }
