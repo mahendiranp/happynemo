@@ -61,7 +61,7 @@ const SplashScreen = (props) => {
             index: 0,
             routes: [
               {
-                name: 'Login'
+                name: 'LoginScreen'
               },
             ],
           })

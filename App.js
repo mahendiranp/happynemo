@@ -34,6 +34,9 @@ import RegisterScreen from './src/screens/RegisterScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import IndividualActivity from './src/screens/IndividualActivity';
 import DrawerNavigationRoutes from './src/screens/DrawerNavigatorRoutes';
+import ForgotPasswordScreen from './src/screens/ForgotPassword';
+import ResetPasswordScreen from './src/screens/ResetPassword'
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 
@@ -64,7 +67,7 @@ const App =  ({navigation}) => {
           />
           
           <Stack.Screen
-            name="Login"
+            name="LoginScreen"
             component={LoginScreen}
             options={{
               headerLeft: (props) => (
@@ -79,6 +82,41 @@ const App =  ({navigation}) => {
               headerTitle: null,
             }}
           />
+
+          <Stack.Screen
+            name="ForgotPasswordScreen"
+            component={ForgotPasswordScreen}
+            options={{
+              headerLeft: (props) => (
+                <Image
+                  style={{width: 67, height: 32, margin: 10}}
+                  source={require('./src/assests/Logo_White.png')}
+                />
+              ),
+              headerStyle: {
+                backgroundColor: '#f39924',
+              },
+              headerTitle: null,
+            }}
+          />
+
+          <Stack.Screen
+            name="ResetPasswordScreen"
+            component={ResetPasswordScreen}
+            options={{
+              headerLeft: (props) => (
+                <Image
+                  style={{width: 67, height: 32, margin: 10}}
+                  source={require('./src/assests/Logo_White.png')}
+                />
+              ),
+              headerStyle: {
+                backgroundColor: '#f39924',
+              },
+              headerTitle: null,
+            }}
+          />
+
           <Stack.Screen
             name="DrawerNavigationRoutes"
             component={DrawerNavigationRoutes}

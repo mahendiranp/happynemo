@@ -26,7 +26,7 @@ import { Link } from '@react-navigation/native';
 GoogleSignin.configure({
   webClientId: '',
 });
-const LoginScreen = (props) => {
+const ForgotPasswordScreen = (props) => {
   let [userEmail, setUserEmail] = useState('');
   let [userPassword, setUserPassword] = useState('');
   let [loading, setLoading] = useState(false);
@@ -34,66 +34,19 @@ const LoginScreen = (props) => {
   let [invalidpassword, setinvalidpassword] = useState(false)
   let [invalidpusername, setinvalidpusername] = useState(false)
 
-  const handleSubmitPress = (userEmail, userPassword) => {
-    // setErrortext('');
-    // if (!userEmail) {
-    //   setinvalidpusername(true)
-    //   return;
-    // }
-    // if (!userPassword) {
-    //   setinvalidpassword(true)
-    //   return;
-    // }
+  const handleSubmitPress = (userEmail) => {
     console.log(userEmail)
-    console.log(userPassword)
-
-
-      try {
-        auth().signInWithEmailAndPassword(userEmail, userPassword)
-            .then(() => {
-              console.log('User account created & signed in!');
-                  props.navigation.reset({
-                    index: 0,
-                    routes: [
-                      {
-                        name: 'HomeScreen'
-                      },
-                    ],
-                  })
-            })
-            .catch((error) => {
-              console.log(error.code)
-              switch(error.code) {
-                case 'auth/invalid-email':
-                      Alert.alert('Email already in use !')
-                      break;
-                case 'auth/wrong-password': 
-                      Alert.alert('invalid password')
-                      break;
-                case 'auth/user-not-found':
-                      Alert.alert('invalid user')
-                      break;
-            }
-            });
-
-      } catch (error){
-        Alert.alert(error)
-      }
   };
 
+  const handleBack = () => {
+      props.navigation.navigate('LoginScreen')
+  }
+
   const LoginScheme = Yup.object().shape({
-   password: Yup.string()
-     .min(2, 'Too Short!')
-     .max(50, 'Too Long!')
-     .required('Required'),
    email: Yup.string()
      .email('Invalid email')
      .required('Required'),
  });
-
-const handleForgotPassword =() => {
-  props.navigation.navigate('ForgotPasswordScreen')
-}
 
   return (
     <View style={styles.mainBody}>
@@ -103,14 +56,13 @@ const handleForgotPassword =() => {
             <Formik
                 initialValues={{ 
                   email: '',
-                  password:''
                 }}
                 validationSchema={LoginScheme}
-                onSubmit={values => handleSubmitPress(values.email, values.password)}
+                onSubmit={values => handleSubmitPress(values.email)}
               >
               {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                 <View>
-                  <Text style={styles.headerStyle}>Sign in</Text>
+                  <Text style={styles.headerStyle}>Forgot password</Text>
                   <View style={styles.SectionStyle}>
                     <TextInput
                       style={styles.inputStyle}
@@ -134,32 +86,20 @@ const handleForgotPassword =() => {
                         <Text style={styles.errormessage}>{errors.email}</Text>
                       ) : null}
                   </View>
-                  <View style={styles.SectionStyle}>
-                    <TextInput
-                      style={styles.inputStyle}
-                      onChangeText={handleChange('password')}
-                      underlineColorAndroid="#FFFFFF"
-                      placeholder="Enter Password" //12345
-                      placeholderTextColor="#888888"
-                      keyboardType="default"
-                      ref={(ref) => {
-                        this._passwordinput = ref;
-                      }}
-                      onSubmitEditing={Keyboard.dismiss}
-                      blurOnSubmit={false}
-                      secureTextEntry={true}
-                    />
-                    {errors.password && touched.password ? (
-                        <Text style={styles.errormessage}>{errors.password}</Text>
-                      ) : null}
-                  </View>
-                  <View><TouchableOpacity onPress={handleForgotPassword}><Text>Forgot password</Text></TouchableOpacity></View>
-                  <TouchableOpacity
-                    style={styles.buttonStyle}
-                    activeOpacity={0.5}
-                    onPress={handleSubmit}>
-                    <Text style={styles.buttonTextStyle}>LOGIN</Text>
-                  </TouchableOpacity>
+                    <View style={styles.inline}>
+                <TouchableOpacity
+                  style={styles.buttonStyleSecondary}
+                  activeOpacity={0.5}
+                  onPress={handleBack}>
+                  <Text style={styles.backButton}>Back</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.buttonStylePrimary}
+                  activeOpacity={0.5}
+                  onPress={handleSubmit}>
+                  <Text style={styles.buttonTextStyle}>LOGIN</Text>
+                </TouchableOpacity>
+              </View>
             </View>
             )}
             </Formik>
@@ -175,20 +115,6 @@ const handleForgotPassword =() => {
                 source={require('../assests/icon-gmail.png')}
               />
             </View>
-
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                flex: 1,
-                flexWrap: 'wrap',
-                margin: 10,
-              }}>
-              <Text>Don't have an account? </Text>
-              <Link to="/RegisterScreen">Sign up</Link>
-              <Text />
-            </View>
           </KeyboardAvoidingView>
         </View>
       </ScrollView>
@@ -196,7 +122,7 @@ const handleForgotPassword =() => {
   );
 };
 
-export default LoginScreen;
+export default ForgotPasswordScreen;
 
 const styles = StyleSheet.create({
   mainBody: {
@@ -290,5 +216,61 @@ const styles = StyleSheet.create({
   },
   signupLink: {
     color: '#f39924',
+  },
+  buttonStylePrimary: {
+    backgroundColor: '#f39924',
+    borderWidth: 0,
+    color: '#FFFFFF',
+    borderColor: '#f39924',
+    alignSelf: 'center',
+    borderRadius: 30,
+    marginTop: 20,
+    marginBottom: 20,
+    padding: 5,
+    paddingLeft: 30,
+    paddingRight: 30,
+    marginLeft:5,
+    marginRight:5,
+    shadowColor: 'rgba(0, 0, 0, 0.24)',
+    shadowOpacity: 1,
+    elevation: 10,
+    shadowRadius: 2 ,
+    shadowOffset : { width: 2, height: 0}
+  },
+  buttonStyleSecondary: {
+    backgroundColor: '#f8f8f8',
+    color: '#FFFFFF',
+    borderColor: '#f39924',
+    alignSelf: 'center',
+    borderRadius: 30,
+    marginTop: 20,
+    marginBottom: 20,
+    padding: 5,
+    paddingLeft: 30,
+    paddingRight: 30,
+    marginLeft:5,
+    marginRight:5,
+    shadowColor: 'rgba(0, 0, 0, 0.24)',
+    shadowOpacity: 1,
+    elevation: 10,
+    shadowRadius: 2 ,
+    shadowOffset : { width: 2, height: 0}
+  },
+  buttonTextStyle: {
+    color: '#FFFFFF',
+    paddingVertical: 10,
+    fontSize: 16,
+  },
+    inline:{
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignSelf: 'center',
+    marginTop: 20,
+  },
+    backButton: {
+    color: '#333333',
+    paddingVertical: 10,
+    fontSize: 16,
   },
 });
